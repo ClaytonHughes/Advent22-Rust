@@ -3,23 +3,6 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::Path;
 
-fn main() {
-    // I should create a function for this...
-    let path = Path::new("./input/01/puzzle.input");
-    let file = match File::open(&path) {
-        Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
-        Ok(file) => file,
-    };
-    let reader = BufReader::new(file);
-    let lines = reader.lines().collect::<Result<_,_>>().unwrap();
-
-    let (elf, calories) = largest_elf_calories(&lines);
-    println!("{} is carrying {} calories", elf, calories);
-
-    let (elves, calories) = largest_3_elf_calories(&lines);
-    println!("Elves {:?} are carrying {} total calories", elves, calories);
-}
-
 fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
     let mut elves = Vec::new();
     let mut calories: u32 = 0;
@@ -48,6 +31,23 @@ fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
 
 fn largest_3_elf_calories(lines: &Vec<String>) -> ([usize; 3], u32) {
     panic!("implement me");
+}
+
+fn main() {
+    // I should create a function for this...
+    let path = Path::new("./input/01/puzzle.input");
+    let file = match File::open(&path) {
+        Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
+        Ok(file) => file,
+    };
+    let reader = BufReader::new(file);
+    let lines = reader.lines().collect::<Result<_,_>>().unwrap();
+
+    let (elf, calories) = largest_elf_calories(&lines);
+    println!("{} is carrying {} calories", elf, calories);
+
+    let (elves, calories) = largest_3_elf_calories(&lines);
+    println!("Elves {:?} are carrying {} total calories", elves, calories);
 }
 
 #[cfg(test)]
