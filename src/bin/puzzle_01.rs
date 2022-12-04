@@ -3,6 +3,22 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::Path;
 
+struct Elf {
+    elf: usize,
+    calories: u32,
+}
+
+impl Elf {
+
+    fn init() -> Elf {
+        Elf { elf: 0, calories: 0}
+    }
+
+    fn new(index: usize, calories: u32) -> Elf {
+        Elf { elf: index, calories: calories }
+    }
+}
+
 fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
     let mut elves = Vec::new();
     let mut calories: u32 = 0;
