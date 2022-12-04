@@ -13,16 +13,18 @@ fn main() {
     let reader = BufReader::new(file);
     let lines = reader.lines().collect::<Result<_,_>>().unwrap();
 
-    let (elf, calories) = largest_elf_calories(lines);
-
+    let (elf, calories) = largest_elf_calories(&lines);
     println!("{} is carrying {} calories", elf, calories);
+
+    let (elves, calories) = largest_3_elf_calories(&lines);
+    println!("Elves {:?} are carrying {} total calories", elves, calories);
 }
 
-fn largest_elf_calories(lines: Vec<String>) -> (usize, u32) {
+fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
     let mut elves = Vec::new();
     let mut calories: u32 = 0;
     for line in lines {
-        match &*line {
+        match &line[..] {                                           // I have no idea what is going on with the borrowing here... :(
             "" => {
                 elves.push(calories);
                 calories = 0;
@@ -44,13 +46,17 @@ fn largest_elf_calories(lines: Vec<String>) -> (usize, u32) {
     (largest + 1, *amount)  // 1-indexed. I don't know why the dereference here is needed =(
 }
 
+fn largest_3_elf_calories(lines: &Vec<String>) -> ([usize; 3], u32) {
+    panic!("implement me");
+}
+
 #[cfg(test)]
 mod test {
 
     use super::*;
 
     #[test]
-    fn test_input() {
+    fn test_part1() {
         let path = Path::new("./input/01/test.input");
         let file = match File::open(&path) {
             Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
@@ -60,7 +66,7 @@ mod test {
         let reader = BufReader::new(file);
         let lines = reader.lines().collect::<Result<_,_>>().unwrap();
 
-        let (elf, calories) = largest_elf_calories(lines);
+        let (elf, calories) = largest_elf_calories(&lines);
         assert_eq!(elf, 4);
         assert_eq!(calories, 24000);
     }
