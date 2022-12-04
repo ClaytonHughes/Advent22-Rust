@@ -13,14 +13,14 @@ fn main() {
     let reader = BufReader::new(file);
     let lines = reader.lines().collect::<Result<_,_>>().unwrap();
 
-    let largest = largest_elf(lines);
+    let (elf, calories) = largest_elf_calories(lines);
 
-    println!("{}", largest);
+    println!("{} is carrying {} calories", elf, calories);
 }
 
-fn largest_elf(lines: Vec<String>) -> usize {
+fn largest_elf_calories(lines: Vec<String>) -> (usize, u32) {
     let mut elves = Vec::new();
-    let mut calories: i32 = 0;
+    let mut calories: u32 = 0;
     for line in lines {
         match &*line {
             "" => {
@@ -28,7 +28,7 @@ fn largest_elf(lines: Vec<String>) -> usize {
                 calories = 0;
             }
             _ => {
-                let parsed = match line.parse::<i32>() {
+                let parsed = match line.parse::<u32>() {
                     Err(why) => panic!("Couldn't parse int from {}: {}", line, why),
                     Ok(number) => number,
                 };
@@ -37,11 +37,11 @@ fn largest_elf(lines: Vec<String>) -> usize {
         }
     }
 
-    let (largest, _amount) = elves.iter().enumerate() // gives a tuple (index: usize, value: T)
+    let (largest, amount) = elves.iter().enumerate() // gives a tuple (index: usize, value: T)
         .max_by(|(_, a), (_, b)| a.cmp(b)) // method is different than examples on SO. Closure takes two (usize, T) and returns a std::cmp::Ordering (not a bool)
         .unwrap();
 
-    largest + 1  // 1-indexed
+    (largest + 1, *amount)  // 1-indexed. I don't know why the dereference here is needed =(
 }
 
 #[cfg(test)]
@@ -60,7 +60,9 @@ mod test {
         let reader = BufReader::new(file);
         let lines = reader.lines().collect::<Result<_,_>>().unwrap();
 
-        assert_eq!(largest_elf(lines), 4);
+        let (elf, calories) = largest_elf_calories(lines);
+        assert_eq!(elf, 4);
+        assert_eq!(calories, 24000);
     }
 }
 
