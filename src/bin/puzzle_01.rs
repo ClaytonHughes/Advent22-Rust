@@ -70,5 +70,21 @@ mod test {
         assert_eq!(elf, 4);
         assert_eq!(calories, 24000);
     }
+
+    #[test]
+    fn test_part2() {
+        let path = Path::new("./input/01/test.input");
+        let file = match File::open(&path) {
+            Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
+            Ok(file) => file,
+        };
+
+        let reader = BufReader::new(file);
+        let lines = reader.lines().collect::<Result<_,_>>().unwrap();
+
+        let (top3, calories) = largest_3_elf_calories(&lines);
+        assert_eq!(top3, [4, 3, 5]);
+        assert_eq!(calories, 45000);
+    }
 }
 
