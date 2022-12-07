@@ -29,7 +29,7 @@ fn calculate_group_priorities(lines: &Vec<&str>) -> u32 {
     let mut total_priority = 0;
     let mut iter = lines.iter();
 
-    let mut group: Option<(&&str, &&str, &&str)> = iter.next_tuple();
+    let mut group: Option<(&&str, &&str, &&str)> = iter.next_tuple(); // ... why double-borrow?
     while group != None {
         let (a, b, c) = group.unwrap();
         let badge = find_badge(a, b, c);
