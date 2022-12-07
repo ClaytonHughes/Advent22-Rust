@@ -13,7 +13,11 @@ fn calculate_priorities(lines: &Vec<&str>) -> u32 {
 }
 
 fn split_rucksack(contents: &str) -> (String, String) {
-    return ("Left".to_string(), "Right".to_string());
+    let len = contents.len() >> 1; // we don't have to worry about non-ascii characters
+    let left = contents[0usize..len].to_string();
+    let right = contents[len..].to_string();
+
+    return (left, right);
 }
 
 fn find_duplicate(left: &str, right: &str) -> char {
