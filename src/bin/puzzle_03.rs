@@ -6,8 +6,10 @@ fn main() {
     let lines = advent::load_lines("03/puzzle.input");
     let lines = lines.iter().map(|l| l.as_str()).collect();
     let score = calculate_priorities(&lines);
+    let badge_score = calculate_group_priorities(&lines);
 
     println!("Total priority of mispacked items is {}", score);
+    println!("Total priority of group badges is {}", badge_score);
 }
 
 fn calculate_priorities(lines: &Vec<&str>) -> u32 {
@@ -20,6 +22,10 @@ fn calculate_priorities(lines: &Vec<&str>) -> u32 {
     }
 
     return total_priority;
+}
+
+fn calculate_group_priorities(lines: &Vec<&str>) -> u32 {
+    return 0;
 }
 
 fn split_rucksack(contents: &str) -> (String, String) {
@@ -41,6 +47,10 @@ fn find_duplicate(left: &str, right: &str) -> char {
     let dupe: Vec<char> = lset.intersection(&rset).map(|i| *i).collect();
 
     return dupe[0];
+}
+
+fn find_badge(a: &str, b: &str, c: &str) -> char {
+    return 'a';
 }
 
 fn get_priority(dupe: char) -> u32 {
@@ -87,7 +97,26 @@ mod tests {
         let lines = lines.iter().map(|l| l.as_str()).collect();
         let score = calculate_priorities(&lines);
 
-        assert_eq!(score, 157)
+        assert_eq!(score, 157);
+    }
+
+    fn finds_group_badge() {
+        let one = "Abcdef";
+        let two = "aBCDZA";
+        let three = "lmnopqrstuvwAxyz";
+
+        let badge = find_badge(one, two, three);
+
+        assert_eq!(badge, 'A');
+    }
+
+    #[test]
+    fn test_part2() {
+        let lines = advent::load_lines("03/test.input");
+        let lines = lines.iter().map(|l| l.as_str()).collect();
+        let score = calculate_group_priorities(&lines);
+
+        assert_eq!(score, 70);
     }
 }
 
