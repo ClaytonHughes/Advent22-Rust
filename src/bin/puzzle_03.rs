@@ -26,7 +26,19 @@ fn calculate_priorities(lines: &Vec<&str>) -> u32 {
 }
 
 fn calculate_group_priorities(lines: &Vec<&str>) -> u32 {
-    return 0;
+    let mut total_priority = 0;
+    let mut iter = lines.iter();
+
+    let mut group: Option<(&&str, &&str, &&str)> = iter.next_tuple();
+    while group != None {
+        let (a, b, c) = group.unwrap();
+        let badge = find_badge(a, b, c);
+        let priority = get_priority(badge);
+        total_priority += priority;
+        group = iter.next_tuple();
+    }
+
+    return total_priority;
 }
 
 fn split_rucksack(contents: &str) -> (String, String) {
@@ -41,17 +53,27 @@ fn find_duplicate(left: &str, right: &str) -> char {
     // This was extremely painful to write.
     // I bashed by head against the compiler quite a bit using the
     // "keep changing things until it works" school of developement.
-    let lchars: Vec<char> = left.chars().collect();
+    let lchars = left.chars().collect::<Vec<char>>();
     let rchars: Vec<char> = right.chars().collect();
     let lset: HashSet<char> = HashSet::from_iter(lchars.into_iter());
     let rset: HashSet<char> = HashSet::from_iter(rchars.into_iter());
-    let dupe: Vec<char> = lset.intersection(&rset).map(|i| *i).collect();
+    let dupe = lset.intersection(&rset).map(|i| *i).collect::<Vec<char>>();
 
     return dupe[0];
 }
 
 fn find_badge(a: &str, b: &str, c: &str) -> char {
-    return 'a';
+    let achars: Vec<char> = a.chars().collect();
+    let bchars: Vec<char> = b.chars().collect();
+    let cchars: Vec<char> = c.chars().collect();
+    let aset: HashSet<char> = HashSet::from_iter(achars.into_iter());
+    let bset: HashSet<char> = HashSet::from_iter(bchars.into_iter());
+    let cset: HashSet<char> = HashSet::from_iter(cchars.into_iter());
+
+    let candidates = HashSet::from_iter(aset.intersection(&bset).map(|i| *i).into_iter());
+    let badge: Vec<char> = candidates.intersection(&cset).map(|i| *i).collect();
+
+    return badge[0];
 }
 
 fn get_priority(dupe: char) -> u32 {
