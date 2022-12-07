@@ -1,6 +1,7 @@
 mod advent;
 
 use std::collections::HashSet;
+use itertools::Itertools;
 
 fn main() {
     let lines = advent::load_lines("03/puzzle.input");
