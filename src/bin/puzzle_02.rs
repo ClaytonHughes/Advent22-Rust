@@ -4,12 +4,12 @@ fn main() {
     let lines = advent::load_lines("02/puzzle.input");
     // Whyy is the type declaration needed here but not in puzzle_01?
     let lines :Vec<&str> = lines.iter().map(|l| l.as_str()).collect();
-    let score = calculate_strategy(&lines);
+    let score = calculate_strategy_direct(&lines);
 
-    println!("The strategy guide predicts a score of {}", score);
+    println!("The strategy_direct guide predicts a score of {}", score);
 }
 
-fn calculate_strategy(input: &Vec<&str>) -> u32 {
+fn calculate_strategy_direct(input: &Vec<&str>) -> u32 {
     let mut total_score: u32 = 0;
 
     for line in input {
@@ -36,6 +36,10 @@ fn calculate_strategy(input: &Vec<&str>) -> u32 {
     }
 
     return total_score;
+}
+
+fn calculate_strategy_result(input: &Vec<&str>) -> u32 {
+    return 0;
 }
 
 #[derive(Debug)]
@@ -76,9 +80,8 @@ mod test {
     fn test_part1() {
         let lines = advent::load_lines("02/test.input");
         let lines = lines.iter().map(|l| l.as_str()).collect();
-        let score = calculate_strategy(&lines);
+        let score = calculate_strategy_direct(&lines);
 
-        println!("{}", score);
         assert_eq!(score, 15);
     }
 
@@ -86,8 +89,9 @@ mod test {
     fn test_part2() {
         let lines = advent::load_lines("02/test.input");
         let lines : Vec<&str> = lines.iter().map(|l| l.as_str()).collect();
+        let score = calculate_strategy_result(&lines);
 
-
+        assert_eq!(score, 12);
     }
 }
 
