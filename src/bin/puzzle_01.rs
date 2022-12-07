@@ -1,7 +1,4 @@
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
-use std::path::Path;
+mod advent;
 
 struct Elf {
     elf: usize,
@@ -19,11 +16,11 @@ impl Elf {
     }
 }
 
-fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
+fn largest_elf_calories(lines: &Vec<&str>) -> (usize, u32) {
     let mut elves = Vec::new();
     let mut calories: u32 = 0;
     for line in lines {
-        match &line[..] {                                           // I have no idea what is going on with the borrowing here... :(
+        match *line {
             "" => {
                 elves.push(calories);
                 calories = 0;
@@ -46,11 +43,11 @@ fn largest_elf_calories(lines: &Vec<String>) -> (usize, u32) {
     (largest + 1, *amount)  // 1-indexed. I don't know why the dereference here is needed =(
 }
 
-fn largest_3_elf_calories(lines: &Vec<String>) -> ([usize; 3], u32) {
+fn largest_3_elf_calories(lines: &Vec<&str>) -> ([usize; 3], u32) {
     let mut elves = Vec::new();
     let mut calories: u32 = 0;
     for line in lines {
-        match &line[..] {
+        match *line {
             "" => {
                 elves.push(calories);
                 calories = 0;
@@ -89,17 +86,16 @@ fn largest_3_elf_calories(lines: &Vec<String>) -> ([usize; 3], u32) {
 }
 
 fn main() {
-    // I should create a function for this...
-    let path = Path::new("./input/01/puzzle.input");
-    let file = match File::open(&path) {
-        Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
-        Ok(file) => file,
-    };
-    let reader = BufReader::new(file);
-    let lines = reader.lines().collect::<Result<_,_>>().unwrap();
+    // Shadowing the owned strings seems like the best way to only deal
+    // with `&str`s, since I want this to be read only and the `match`
+    // statements were a pain with `String`s and the empty string.
+    //   There might be a better way to detect that, though...
+    let lines = advent::load_lines("01/puzzle.input");
+    // Also, I should figure out the differences between types of `iter()`
+    let lines = lines.iter().map(|l| l.as_str()).collect();
 
     let (elf, calories) = largest_elf_calories(&lines);
-    println!("{} is carrying {} calories", elf, calories);
+    println!("Elf {} is carrying {} calories", elf, calories);
 
     let (elves, calories) = largest_3_elf_calories(&lines);
     println!("Elves {:?} are carrying {} total calories", elves, calories);
@@ -112,14 +108,8 @@ mod test {
 
     #[test]
     fn test_part1() {
-        let path = Path::new("./input/01/test.input");
-        let file = match File::open(&path) {
-            Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
-            Ok(file) => file,
-        };
-
-        let reader = BufReader::new(file);
-        let lines = reader.lines().collect::<Result<_,_>>().unwrap();
+        let lines = advent::load_lines("01/test.input");
+        let lines = lines.iter().map(|l| l.as_str()).collect();
 
         let (elf, calories) = largest_elf_calories(&lines);
         assert_eq!(elf, 4);
@@ -128,14 +118,8 @@ mod test {
 
     #[test]
     fn test_part2() {
-        let path = Path::new("./input/01/test.input");
-        let file = match File::open(&path) {
-            Err(why) => panic!("Couldn't read {}: {}", path.display(), why),
-            Ok(file) => file,
-        };
-
-        let reader = BufReader::new(file);
-        let lines = reader.lines().collect::<Result<_,_>>().unwrap();
+        let lines = advent::load_lines("01/test.input");
+        let lines = lines.iter().map(|l| l.as_str()).collect();
 
         let (top3, calories) = largest_3_elf_calories(&lines);
         assert_eq!(top3, [4, 3, 5]);
