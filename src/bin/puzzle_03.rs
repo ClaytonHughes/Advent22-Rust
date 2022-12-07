@@ -1,5 +1,7 @@
 mod advent;
 
+use std::collections::HashSet;
+
 fn main() {
     let lines = advent::load_lines("03/puzzle.input");
     let lines = lines.iter().map(|l| l.as_str()).collect();
@@ -29,7 +31,16 @@ fn split_rucksack(contents: &str) -> (String, String) {
 }
 
 fn find_duplicate(left: &str, right: &str) -> char {
-    return 'a';
+    // This was extremely painful to write.
+    // I bashed by head against the compiler quite a bit using the
+    // "keep changing things until it works" school of developement.
+    let lchars: Vec<char> = left.chars().collect();
+    let rchars: Vec<char> = right.chars().collect();
+    let lset: HashSet<char> = HashSet::from_iter(lchars.into_iter());
+    let rset: HashSet<char> = HashSet::from_iter(rchars.into_iter());
+    let dupe: Vec<char> = lset.intersection(&rset).map(|i| *i).collect();
+
+    return dupe[0];
 }
 
 fn get_priority(dupe: char) -> u32 {
@@ -56,6 +67,9 @@ mod tests {
         let right = "xyzwe";
         let dupe = find_duplicate(left, right);
         assert_eq!(dupe, 'e');
+
+        let dupe = find_duplicate_from_scratch(left, right);
+        assert_eq!(dupe, 'e');
     }
 
     #[test]
@@ -75,4 +89,19 @@ mod tests {
 
         assert_eq!(score, 157)
     }
+}
+
+// this took way less time to write than the one above =(
+#[allow(dead_code)]
+fn find_duplicate_from_scratch(left: &str, right: &str) -> char {
+    let mut array: [bool; 128] = [false; 128];
+    for c in left.chars() {
+        array[c as usize] = true;
+    }
+    for c in right.chars() {
+        if array[c as usize] == true {
+            return c;
+        }
+    }
+    panic!("no duplicate chars");
 }
