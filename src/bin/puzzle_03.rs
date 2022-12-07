@@ -9,7 +9,15 @@ fn main() {
 }
 
 fn calculate_priorities(lines: &Vec<&str>) -> u32 {
-    return 0;
+    let mut total_priority = 0;
+    for line in lines {
+        let (left, right) = split_rucksack(line);
+        let dupe = find_duplicate(left.as_str(), right.as_str());
+        let priority = get_priority(dupe);
+        total_priority += priority;
+    }
+
+    return total_priority;
 }
 
 fn split_rucksack(contents: &str) -> (String, String) {
@@ -24,8 +32,11 @@ fn find_duplicate(left: &str, right: &str) -> char {
     return 'a';
 }
 
-fn sum_priorities(dupes: &Vec<char>) -> u32 {
-    return 0;
+fn get_priority(dupe: char) -> u32 {
+    if 'a' <= dupe && dupe <= 'z' {
+        return dupe as u32 - 'a' as u32 + 1;
+    }
+    return dupe as u32 - 'A' as u32 + 27;
 }
 
 #[cfg(test)]
@@ -49,21 +60,11 @@ mod tests {
 
     #[test]
     fn has_correct_priorities() {
-        let dupes :Vec<char> = "a".chars().collect();
-        let score = sum_priorities(&dupes);
-        assert_eq!(score, 1);
 
-        let dupes = "z".chars().collect();
-        let score = sum_priorities(&dupes);
-        assert_eq!(score, 26);
-
-        let dupes = "A".chars().collect();
-        let score = sum_priorities(&dupes);
-        assert_eq!(score, 27);
-
-        let dupes = "A".chars().collect();
-        let score = sum_priorities(&dupes);
-        assert_eq!(score, 52);
+        assert_eq!(get_priority('a'), 1);
+        assert_eq!(get_priority('z'), 26);
+        assert_eq!(get_priority('A'), 27);
+        assert_eq!(get_priority('Z'), 52);
     }
 
     #[test]
